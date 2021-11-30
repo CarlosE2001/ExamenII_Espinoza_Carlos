@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="container" style="padding-top: 25%; height:100vh;">
+    <div class="card bg-light" style="padding: 40px;">
+
+        <h1><strong>Bienvenidos a Pizza 4 U</strong></h1>
+
+        <h3>
+            Contamos con más de 15 años de estar llevando felicidad y sabor a las casas costarriceses
+        </h3>
+
+        <hr />
+
+        <a href="#" class="btn btn-info w-25 align-self-center" onclick="goToMenu()">Ordena Ya</a>
+
+    </div>
+</div>
+
+
+<div class="container" style="height: 100vh">
+
+    <h1 style="padding-top: 15px;">
+        ESCOGE TU PLATO FAVORITO
+    </h1>
+
+    <div class="row">
+        @for (int i = 0; i < 12; i++) {
+            <div class="col-4">
+                <div class="card" style="margin:15px 0 15px 0;">
+                    <div class="card-header text-center bg-white">
+                        <div class="row">
+                            <div class="col">
+                                Combo # N
+                            </div>
+                            <div class="col">
+                                Precio: 0000
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body bg-light">
+                        FOTO
+                    </div>
+
+                    <div class="card-footer text-center bg-light">
+                        <input type="button" name="name" value="Mas Info" class="btn btn-info" />
+                        <input type="button" name="name" value="Agregar al Carrito" class="btn btn-success" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="card border-0">
+        <a href="#" class="btn btn-primary align-self-end" onclick="goToTop()">Ir Arriba</a>
+    </div>
+
+</div>
+
+<script>
+    function goToMenu() {
+        document.documentElement.scrollTop = 1000;
+    }
+
+    function goToTop() {
+        document.documentElement.scrollTop = 0;
+    }
+</script>
+
+
+
+

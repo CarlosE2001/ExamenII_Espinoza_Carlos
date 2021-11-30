@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/Site.css" />
+    <script src="https://kit.fontawesome.com/9ca089ca02.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="padding-left:20px;">
+        <a class="navbar-brand" href="/Home/Index">
+            PIZZA 4 U
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+
+                    <a class="nav-link" href="/Home/Index"><i class="fas fa-home"></i> Inicio</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/News/ListNews"><i class="far fa-newspaper"></i> Nosotros</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/EducationalActivity/ListActivities"><i class="fas fa-meteor"></i> Arma Tu Pizza</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="rounded">
+        @RenderBody()
+
+    </div>
+
+    
+
+    @*@Scripts.Render("~/bundles/jquery")*@
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>
