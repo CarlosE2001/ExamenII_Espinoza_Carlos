@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Pizza4U.Handlers;
+using Pizza4U.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,9 +8,47 @@ using System.Web.Mvc;
 
 namespace Pizza4U.Controllers {
     public class HomeController : Controller {
+
+        private ItemHandler ItemHandler { get; set; }
+        private CookieController cookieController { get; set; }
+
+        public HomeController() {
+            this.ItemHandler = new ItemHandler();
+            this.cookieController = new CookieController();
+        }
+
         public ActionResult Index() {
+            ItemModel item = this.ItemHandler.GetItemById(1);
+            ViewBag.Items = this.ItemHandler.GetAllItems();
             return View();
         }
+
+
+        public JsonResult FetchItem(int id) {
+            ItemModel item = this.ItemHandler.GetItemById(id);
+            return Json(item, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult AddItemToCart(int id) {
+            string itemsIds = this.cookieController.FetchCookieValue("cartItems");
+            if (itemsIds == "-1") {
+                itemsIds = Convert.ToString(id) + ",";
+                HttpCookie cart = this.cookieController.CreateCookie("cartItems", itemsIds, DateTime.Now.AddMinutes(30));
+
+            } else {
+                itemsIds += Convert.ToString(id) + ",";
+                this.cookieController.UpdateCookie("cartItems", itemsIds);
+            }
+            return Json(itemsIds, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult FetchDataToCart() {
+            string itemsIds = this.cookieController.FetchCookieValue("cartItems");
+
+            return Json(itemsIds, JsonRequestBehavior.AllowGet);
+        }
+
 
         public ActionResult About() {
             ViewBag.Message = "Your application description page.";
