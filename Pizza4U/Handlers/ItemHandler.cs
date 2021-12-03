@@ -35,11 +35,12 @@ namespace Pizza4U.Handlers {
 
         public List<ItemModel> GetItemsFromIdList(List<string> itemsIds) {
             List<ItemModel> itemsModels = new List<ItemModel>();
-            if (itemsIds.Any()) { 
-                itemsIds.RemoveAt(itemsIds.Count - 1);
-            }
+            
             foreach (string itemId in itemsIds) {
-                itemsModels.Add(GetItemById(Convert.ToInt32(itemId)));
+                if(itemId != "") {
+                    itemsModels.Add(GetItemById(Convert.ToInt32(itemId)));
+                }
+                
             }
             return itemsModels;
         }

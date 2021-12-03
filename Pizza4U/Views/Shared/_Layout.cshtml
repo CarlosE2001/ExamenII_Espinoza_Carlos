@@ -168,7 +168,6 @@
                 const response = await fetch(url);
                 const data = await response.json();
                 items = data;
-                console.log(data);
             } else {
                 items = "";
             }
@@ -178,23 +177,6 @@
 
         function triggerModal(items) {
             console.log(items);
-            let itemsObjs = [];
-
-            let item1 = {
-                Product: "Combo#1 El de siempre",
-                Price: "5000"
-            }
-
-            let item2 = {
-                Product: "Combo#2 La Pepe",
-                Price: "5200"
-            }
-
-            itemsObjs.push(item1);
-            itemsObjs.push(item2);
-
-
-
             let itemCardId = "#itemCard";
             let netPriceId = "#netPrice";
             let taxAmountId = "#taxAmount";
@@ -223,8 +205,8 @@
 
             if (items == '') {
 
-                priceCard.innerHTML = "";
-                buttonController.innerHTML = "";
+                priceCard.style.display = "none";
+                buttonController.style.display = "none";
 
                 let bodyTemplateClone = bodyTemplate.cloneNode(true);
                 bodyTemplateClone.childNodes[1].childNodes[1].innerHTML = "No hay productos";
@@ -247,6 +229,9 @@
                 netPriceContainer.innerHTML = "₡" + netPrice;
                 taxAmountContainer.innerHTML = "₡" + taxAmount;
                 finalPriceContainer.innerHTML = "₡" + finalPrice;
+
+                priceCard.style.display = "block";
+                buttonController.display = "block";
             }
             button.click();
 
