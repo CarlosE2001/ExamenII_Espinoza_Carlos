@@ -52,19 +52,23 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/EducationalActivity/ListActivities"><i class="fas fa-meteor"></i> Arma Tu Pizza</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" onclick="getItemsOnCart()">Mi Carrito</a>
+                </li>
             </ul>
         </div>
     </nav>
 
-    <button style="display: none;" id="modalToggle" class="btn btn-success" onclick="" value="0" data-toggle="modal" data-target="#calendarEventModal"> Ver funcionarios <span id="count"></span> </button>
 
+    <button style="display: none;" id="modalToggle" class="link nav-link bg-primary" value="0" data-toggle="modal" data-target="#calendarEventModal"> Ver funcionarios <span id="count"></span> </button>
     <div class="modal fade" id="calendarEventModal" tabindex="-1" role="dialog" aria-labelledby="calendarEventModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="calendarEventLongTitle">
                         <strong>
-
+                            Carrito de Compras
                         </strong>
                     </h3>
                     <button type="button" class="close btn btn-danger" style="margin: 1px;" data-dismiss="modal" aria-label="Close">
@@ -72,6 +76,80 @@
                     </button>
                 </div>
                 <div class="modal-body" id="calendarEventDescription">
+                    <div id="itemCard" class="card bg-light">
+                        <div id="itemBody" class="card-body">
+                            <div class="row">
+                                <div id="itemTitle" class="col">
+                                    Titulo del Item
+                                </div>
+                                <div class="col text-end">
+                                    <strong id="itemPrice">C5000</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    Titulo del Item
+                                </div>
+                                <div class="col text-end">
+                                    <strong>C5000</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="priceCard" class="card bg-primary text-white" style="margin: 15px 0 15px 0;">
+                        <div id="itemBody" class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    Precio Neto
+                                </div>
+                                <div class="col text-end">
+                                    <strong id="netPrice"></strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    Iva
+                                </div>
+                                <div class="col text-end">
+                                    <strong id="taxAmount">C5000</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    Precio final
+                                </div>
+                                <div class="col text-end">
+                                    <strong id="finalPrice">C5000</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="buttonController" class="card border-0">
+                        <div class="row">
+                            <div class="col text-center">
+                                <button class="btn btn-danger w-75">LimpiarCarrito</button>
+                            </div>
+                            <div class="col text-center ">
+                                <button class="btn btn-success w-75">Pagar</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -87,7 +165,92 @@
 
     @*@Scripts.Render("~/bundles/jquery")*@
     <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script src="~/Scripts/CookieHandler.js"></script>
     <script>
+        let cookieHandler = new CookieHandler();
+
+        async function getItemsOnCart() {
+            let itemsIds = cookieHandler.getCookieValue("cartItems");
+            console.log("Items: " + itemsIds);
+            triggerModal(itemsIds);
+        }
+
+        function triggerModal(items) {
+
+            let itemsObjs = [];
+
+            let item1 = {
+                Product: "Combo#1 El de siempre",
+                Price: "5000"
+            }
+
+            let item2 = {
+                Product: "Combo#2 La Pepe",
+                Price: "5200"
+            }
+
+            itemsObjs.push(item1);
+            itemsObjs.push(item2);
+
+
+
+            let itemCardId = "#itemCard";
+            let netPriceId = "#netPrice";
+            let taxAmountId = "#taxAmount";
+            let finalPriceId = "#finalPrice";
+            let buttonControllerId = "#buttonController";
+            let priceCardId = "#priceCard";
+            let buttonId = "#modalToggle";
+            let bodyTemplateId = "#itemBody";
+
+            let itemCard = document.querySelector(itemCardId);
+            let priceCard = document.querySelector(priceCardId);
+            let netPriceContainer = document.querySelector(netPriceId);
+            let taxAmountContainer = document.querySelector(taxAmountId);
+            let finalPriceContainer = document.querySelector(finalPriceId);
+            let buttonController = document.querySelector(buttonControllerId);
+            let button = document.querySelector(buttonId);
+
+            let netPrice = 0;
+            let tax = 0.13;
+            let taxAmount = 0;
+            let finalPrice = 0;
+
+            //Hacer la copia de los bodys
+            let bodyTemplate = document.querySelector(bodyTemplateId);
+            itemCard.innerHTML = "";
+
+            if (items == '') {
+
+                priceCard.innerHTML = "";
+                buttonController.innerHTML = "";
+
+                let bodyTemplateClone = bodyTemplate.cloneNode(true);
+                bodyTemplateClone.childNodes[1].childNodes[1].innerHTML = "No hay productos";
+                bodyTemplateClone.childNodes[1].childNodes[3].innerHTML = "<strong>" + "₡0" + "</strong>";
+                itemCard.appendChild(bodyTemplateClone);
+
+
+            } else {
+                itemsObjs.forEach(item => {
+                    let bodyTemplateClone = bodyTemplate.cloneNode(true);
+                    bodyTemplateClone.childNodes[1].childNodes[1].innerHTML = item.Product;
+                    bodyTemplateClone.childNodes[1].childNodes[3].innerHTML = "<strong>" + "₡" + item.Price + "</strong>";
+                    itemCard.appendChild(bodyTemplateClone);
+                    netPrice += parseInt(item.Price);
+                })
+
+                taxAmount = tax * netPrice;
+                finalPrice = netPrice + taxAmount;
+
+                netPriceContainer.innerHTML = "₡" + netPrice;
+                taxAmountContainer.innerHTML = "₡" + taxAmount;
+                finalPriceContainer.innerHTML = "₡" + finalPrice;
+            }
+            button.click();
+
+        }
+
 
     </script>
     @RenderSection("scripts", required: false)

@@ -37,12 +37,13 @@ namespace Pizza4U.Controllers {
 
         public string FetchCookieValue(string cookieName) {
             string value = null;
-
             try {
-                value = Request.Cookies[cookieName].Value;
-            } catch (Exception e) {
+                HttpCookie cookie = Request.Cookies[cookieName];
+                value = cookie.Value;
+            } catch {
                 value = "-1";
             }
+            
             return value;
         }
     }

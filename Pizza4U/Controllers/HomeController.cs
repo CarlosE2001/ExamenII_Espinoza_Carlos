@@ -20,6 +20,10 @@ namespace Pizza4U.Controllers {
         public ActionResult Index() {
             ItemModel item = this.ItemHandler.GetItemById(1);
             ViewBag.Items = this.ItemHandler.GetAllItems();
+            string cookieValue = this.cookieController.FetchCookieValue("cartItems");
+            if(cookieValue == "-1") {
+                this.cookieController.CreateCookie("cartItems", "", DateTime.Now.AddMinutes(30));
+            }
             return View();
         }
 
@@ -34,7 +38,7 @@ namespace Pizza4U.Controllers {
             if (itemsIds == "-1") {
                 itemsIds = Convert.ToString(id) + ",";
                 HttpCookie cart = this.cookieController.CreateCookie("cartItems", itemsIds, DateTime.Now.AddMinutes(30));
-
+                Response.Cookies.Add(cart);
             } else {
                 itemsIds += Convert.ToString(id) + ",";
                 this.cookieController.UpdateCookie("cartItems", itemsIds);

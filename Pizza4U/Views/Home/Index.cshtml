@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "Home Page";
     string itemFetchUrl = Url.Content("~/Home/FetchItem");
+    string itemPostUrl = Url.Content("~/Home/AddItemToCart");
 }
 
 <div class="container" style="padding-top: 25%; height:100vh;">
@@ -42,7 +43,7 @@
 
                     <div class="card-footer text-center bg-light">
                         <input type="button" name="name" value="Mas Info" class="btn btn-info" onclick="getItemInfo('@Item.Id')" />
-                        <input type="button" name="name" value="Agregar al Carrito" class="btn btn-success" />
+                        <input type="button" name="name" value="Agregar al Carrito" class="btn btn-success" onclick="addItemToCart('@Item.Id')" />
                     </div>
                 </div>
             </div>
@@ -79,12 +80,32 @@
 </div>
 
 <script>
+
+    function getCookieValue(name) {
+        let result = document.cookie.match("(^|[^;]+)\\s*" + name + "\\s*=\\s*([^;]+)")
+        return result ? result.pop() : ""
+    }
+    function updateCookie(value) {
+        let cookieValue = getCookieValue("cartItems");
+        console.log("Cookie Value From Update: " + cookieValue);
+        document.cookie = "cartItems=" + cookieValue + value + ",";
+    }
+
+    let cookieValue = (document.cookie.match(/^(?:.*;)?\s*cartItems\s*=\s*([^;]+)(?:.*)?$/) || [, null])[1];
+    console.log(cookieValue);
+
     function goToMenu() {
         document.documentElement.scrollTop = 1000;
     }
 
     function goToTop() {
         document.documentElement.scrollTop = 0;
+    }
+
+    async function addItemToCart(itemId) {
+        updateCookie(itemId);
+        cookieValue = (document.cookie.match(/^(?:.*;)?\s*cartItems\s*=\s*([^;]+)(?:.*)?$/) || [, null])[1];
+        console.log(cookieValue);
     }
 
     async function getItemInfo(itemId) {
