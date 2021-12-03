@@ -21,5 +21,9 @@ class CookieHandler {
         document.cookie = "cartItems=" + cookieValue + value + ",";
     }
 
+    deleteCookieValue(name) {
+        this.updateCookie(name, "");
+    }
+
     
 }

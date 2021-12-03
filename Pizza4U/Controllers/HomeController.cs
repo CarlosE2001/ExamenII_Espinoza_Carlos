@@ -47,10 +47,10 @@ namespace Pizza4U.Controllers {
 
         }
 
-        public JsonResult FetchDataToCart() {
-            string itemsIds = this.cookieController.FetchCookieValue("cartItems");
-
-            return Json(itemsIds, JsonRequestBehavior.AllowGet);
+        public JsonResult FetchDataToCart(string itemsIds) {
+            List<string> items = itemsIds.Split(',').ToList();
+            List<ItemModel> itemsModels = this.ItemHandler.GetItemsFromIdList(items);
+            return Json(itemsModels, JsonRequestBehavior.AllowGet);
         }
 
 

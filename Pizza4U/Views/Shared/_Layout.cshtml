@@ -1,19 +1,5 @@
 ﻿@{
     string cartFetchUrl = Url.Content("~/Home/FetchDataToCart");
-    string userIdentityCookie = null;
-    int rolCookie = 0;
-    try {
-
-        if (Request.Cookies.Get("userIdentity") != null) {
-            userIdentityCookie = Request.Cookies["userIdentity"].Value;
-        }
-        if (Request.Cookies.Get("authCookie") != null) {
-            rolCookie = Convert.ToInt32(Request.Cookies["authCookie"].Value);
-        }
-
-    } catch {
-        userIdentityCookie = null;
-    }
 }
 
 <!DOCTYPE html>
@@ -140,7 +126,7 @@
                     <div id="buttonController" class="card border-0">
                         <div class="row">
                             <div class="col text-center">
-                                <button class="btn btn-danger w-75">LimpiarCarrito</button>
+                                <button class="btn btn-danger w-75" onclick="clearCartElements()">LimpiarCarrito</button>
                             </div>
                             <div class="col text-center ">
                                 <button class="btn btn-success w-75">Pagar</button>
@@ -169,14 +155,29 @@
     <script>
         let cookieHandler = new CookieHandler();
 
+
+        function clearCartElements() {
+            cookieHandler.deleteCookieValue("cartItems");
+        }
+
         async function getItemsOnCart() {
+            let items;
             let itemsIds = cookieHandler.getCookieValue("cartItems");
-            console.log("Items: " + itemsIds);
-            triggerModal(itemsIds);
+            if (itemsIds != '') {
+                let url = "@cartFetchUrl" + "?itemsIds=" + itemsIds;
+                const response = await fetch(url);
+                const data = await response.json();
+                items = data;
+                console.log(data);
+            } else {
+                items = "";
+            }
+
+            triggerModal(items);
         }
 
         function triggerModal(items) {
-
+            console.log(items);
             let itemsObjs = [];
 
             let item1 = {
@@ -232,7 +233,7 @@
 
 
             } else {
-                itemsObjs.forEach(item => {
+                items.forEach(item => {
                     let bodyTemplateClone = bodyTemplate.cloneNode(true);
                     bodyTemplateClone.childNodes[1].childNodes[1].innerHTML = item.Product;
                     bodyTemplateClone.childNodes[1].childNodes[3].innerHTML = "<strong>" + "₡" + item.Price + "</strong>";
