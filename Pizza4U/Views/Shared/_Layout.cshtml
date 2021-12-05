@@ -40,7 +40,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" onclick="getItemsOnCart()">Mi Carrito</a>
+                    <a class="nav-link" onclick="showItemsOnCart()">Mi Carrito</a>
                 </li>
             </ul>
         </div>
@@ -57,7 +57,7 @@
                             Carrito de Compras
                         </strong>
                     </h3>
-                    <button type="button" class="close btn btn-danger" style="margin: 1px;" data-dismiss="modal" aria-label="Close">
+                    <button id="closeBtn" type="button" class="close btn btn-danger" style="margin: 1px;" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -155,11 +155,11 @@
     <script>
         let cookieHandler = new CookieHandler();
 
-
-        function clearCartElements() {
-            cookieHandler.deleteCookieValue("cartItems");
+        async function showItemsOnCart() {
+            let items = await getItemsOnCart();
+            triggerModal(items);
         }
-
+        
         async function getItemsOnCart() {
             let items;
             let itemsIds = cookieHandler.getCookieValue("cartItems");
@@ -171,11 +171,18 @@
             } else {
                 items = "";
             }
+            return items;
 
-            triggerModal(items);
         }
 
         function triggerModal(items) {
+            let buttonId = "#modalToggle";
+            let button = document.querySelector(buttonId);
+            loadElementsToModal(items);
+            button.click();
+        }
+
+        function loadElementsToModal(items) {
             console.log(items);
             let itemCardId = "#itemCard";
             let netPriceId = "#netPrice";
@@ -192,7 +199,7 @@
             let taxAmountContainer = document.querySelector(taxAmountId);
             let finalPriceContainer = document.querySelector(finalPriceId);
             let buttonController = document.querySelector(buttonControllerId);
-            let button = document.querySelector(buttonId);
+            
 
             let netPrice = 0;
             let tax = 0.13;
@@ -217,8 +224,20 @@
             } else {
                 items.forEach(item => {
                     let bodyTemplateClone = bodyTemplate.cloneNode(true);
+
+                    //Adding the Info
                     bodyTemplateClone.childNodes[1].childNodes[1].innerHTML = item.Product;
                     bodyTemplateClone.childNodes[1].childNodes[3].innerHTML = "<strong>" + "₡" + item.Price + "</strong>";
+
+                    console.log(bodyTemplateClone);
+                    //Adding Events
+                    bodyTemplateClone.addEventListener('click', (event) => {
+                        removeCartItem(item.Id);
+                        removeElement(bodyTemplateClone);
+                        let closeBtn = document.querySelector("#closeBtn");
+                        closeBtn.click();
+                    })
+
                     itemCard.appendChild(bodyTemplateClone);
                     netPrice += parseInt(item.Price);
                 })
@@ -231,11 +250,31 @@
                 finalPriceContainer.innerHTML = "₡" + finalPrice;
 
                 priceCard.style.display = "block";
-                buttonController.display = "block";
+                buttonController.style.display = "block";
             }
-            button.click();
-
         }
+        
+
+        function removeCartItem(value) {
+            console.log("Valor para borrar: " + value);
+            console.log("Valores originales: " + cookieHandler.getCookieValue("cartItems"));
+            let newValues = cookieHandler.getCookieValue("cartItems");
+            newValues = newValues.replace(value + ",", "");
+            console.log("Valores reemplazados: " + newValues);
+            cookieHandler.updateCookie("cartItems", newValues);
+        }
+
+        function clearCartElements() {
+            cookieHandler.updateCookie("cartItems", "");
+            let closeBtn = document.querySelector("#closeBtn");
+            closeBtn.click();
+        }
+
+        function removeElement(child) {
+            child.parentElement.removeChild(child);
+        }
+
+        
 
 
     </script>

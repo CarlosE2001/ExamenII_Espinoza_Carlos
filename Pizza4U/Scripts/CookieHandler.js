@@ -18,7 +18,7 @@ class CookieHandler {
     updateCookie(name, value) {
         let cookieValue = getCookieValue(name);
         console.log("Cookie Value From Update: " + cookieValue);
-        document.cookie = "cartItems=" + cookieValue + value + ",";
+        document.cookie = "cartItems=" + value + ",";
     }
 
     deleteCookieValue(name) {

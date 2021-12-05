@@ -55,13 +55,13 @@
     </div>
 
 
-    <button style="display: none;" id="modalToggle" class="btn btn-success" onclick="" value="0" data-toggle="modal" data-target="#calendarEventModal"> Ver funcionarios <span id="count"></span> </button>
+    <button style="display: none;" id="modalToggle" class="btn btn-success" onclick="" value="0" data-toggle="modal" data-target="#InfoModal"> Ver funcionarios <span id="count"></span> </button>
 
-    <div class="modal fade" id="calendarEventModal" tabindex="-1" role="dialog" aria-labelledby="calendarEventModalTitle" aria-hidden="true">
+    <div class="modal fade" id="InfoModal" tabindex="-1" role="dialog" aria-labelledby="InfoModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="calendarEventLongTitle">
+                    <h3 class="modal-title" id="InfoLongTitle">
                         <strong>
 
                         </strong>
@@ -70,7 +70,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" id="calendarEventDescription">
+                <div class="modal-body" id="InfoDescription">
                 </div>
 
             </div>
@@ -111,12 +111,12 @@
         url += "?id=" + itemId;
         let response = await fetch(url);
         let data = await response.json();
-        triggerModal(data);
+        triggerInfoModal(data);
     }
 
-    function triggerModal(item) {
-        let titleContainerId = "#calendarEventLongTitle";
-        let descriptionContainerId = "#calendarEventDescription";
+    function triggerInfoModal(item) {
+        let titleContainerId = "#InfoLongTitle";
+        let descriptionContainerId = "#InfoDescription";
         let linkButtonId = "#linkButton";
         let buttonId = "#modalToggle";
 
@@ -131,25 +131,6 @@
         button.click();
     }
 
-    function eventClicked(event) {
-        event = event.event._def;
-
-        let titleContainerId = "#calendarEventLongTitle";
-        let descriptionContainerId = "#calendarEventDescription";
-        let linkButtonId = "#linkButton";
-        let buttonId = "#modalToggle";
-
-        let title = document.querySelector(titleContainerId);
-        let description = document.querySelector(descriptionContainerId);
-        let linkButton = document.querySelector(linkButtonId);
-        let button = document.querySelector(buttonId);
-
-        title.innerHTML = "<strong>" + event.title + "</strong> <br /> <h5>" + event.extendedProps.date + "</h5>";
-        description.innerHTML = verifyField(event.extendedProps.description, "Sin descripción");
-        linkButton.setAttribute("href", verifyField(event.extendedProps.link, "/EducationalActivity/ListActivities"));
-
-        button.click();
-    }
 
 </script>
 
