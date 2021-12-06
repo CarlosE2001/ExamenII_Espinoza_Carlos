@@ -31,7 +31,7 @@ namespace Pizza4U.Controllers
             }
             ViewBag.Ingredients = ingredients;
             ViewBag.Extras = extras;
-            return View();
+            return View("CustomPizza");
         }
     }
 }

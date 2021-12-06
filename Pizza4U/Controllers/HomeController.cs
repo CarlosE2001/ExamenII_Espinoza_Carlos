@@ -18,13 +18,14 @@ namespace Pizza4U.Controllers {
         }
 
         public ActionResult Index() {
+
             ItemModel item = this.ItemHandler.GetItemById(1);
             ViewBag.Items = this.ItemHandler.GetAllItems();
             string cookieValue = this.cookieController.FetchCookieValue("cartItems");
             if(cookieValue == "-1") {
                 this.cookieController.CreateCookie("cartItems", "", DateTime.Now.AddMinutes(30));
             }
-            return View();
+            return View("Index");
         }
 
 
