@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "CustomPizza";
+}
+
+<div class="container">
+    <h1><strong>LA PIZZA COMO MÁS TE GUSTA</strong></h1>
+    <div class="card">
+
+        <div class="card-body bg-light">
+            <div class="row">
+                <div class="col">
+                    <label>Base de la pizza</label>
+                    <select class="form-select" id="pizzaSelector" onchange="calculatePrice()">
+                        <option value="0">Seleccione su base</option>
+                        <option value="3500">Jamon</option>
+                        <option value="4000">Pepe</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <h3 class="text-center" id="price">Precio: 0</h3>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 15px;">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            Ingredientes (200 c/u)
+                        </div>
+                        <div class="card-body" id="ingredientContainer">
+                            @foreach(var ingredient in ViewBag.Ingredients) {
+                                <input type="checkbox" class="form-check-input checkIngredients" onclick="calculatePrice()" id="@ingredient"/>
+                                <label class="form-check-label">@ingredient</label> <br />
+                            }   
+                        </div>
+                    </div>
+                </div>
+                <div class="col" >
+                    <div class="card">
+                        <div class="card-header">
+                            Ingredientes (500 c/u)
+                        </div>
+                        <div class="card-body" id="ingredientContainer">
+                            @foreach (var extras in ViewBag.Extras) {
+                                <input type="checkbox" class="form-check-input checkExtras" onclick="calculatePrice()" id="@extras" />
+                                <label class="form-check-label">@extras</label> <br />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0" >
+        <div class="row" style="margin-top: 15px;">
+            <div class="col">
+                <a href="/Home/Index" class="btn btn-light">Regresar</a>
+            </div>
+            <div class="col text-end">
+                <a href="/Home/Index" class="btn btn-success">Finalizar y Pagar</a>
+            </div>
+        </div>
+        
+        
+    </div>
+</div>
+
+
+<script src="~/Scripts/MultiSelect.js"></script>
+<script>
+
+    function calculatePrice() {
+        let checkboxsIngredients = document.querySelectorAll(".checkIngredients");
+        let checkboxsExtras = document.querySelectorAll(".checkExtras");
+        let price = 0;
+
+        checkboxsExtras.forEach(extra => {
+            if (extra.checked) {
+                price += 500;
+            }
+        })
+
+        checkboxsIngredients.forEach(ingredient => {
+            if (ingredient.checked) {
+                price += 200;
+            }
+        })
+
+        let pizzaSelectorValue = document.querySelector("#pizzaSelector").value
+        console.log(pizzaSelectorValue);
+        if (pizzaSelectorValue != 0) {
+            price += parseInt(pizzaSelectorValue);
+        }
+        document.querySelector("#price").innerHTML = "Precio: ₡" + price;
+    }
+</script>
+
