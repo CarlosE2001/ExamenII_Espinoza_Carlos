@@ -28,15 +28,15 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
 
-                    <a class="nav-link" href="/Home/Index"><i class="fas fa-home"></i> Inicio</a>
+                    <a class="nav-link" href="/Home/Index"> Inicio</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/Home/About"><i class="far fa-newspaper"></i> Nosotros</a>
+                    <a class="nav-link" href="/Home/About"> Nosotros</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/Pizza/CustomPizza"><i class="fas fa-home"></i> Arma Tu Pizza</a>
+                    <a class="nav-link" href="/Pizza/CustomPizza">Arma Tu Pizza</a>
                 </li>
 
                 <li class="nav-item">
@@ -129,7 +129,7 @@
                                 <button class="btn btn-danger w-75" onclick="clearCartElements()">LimpiarCarrito</button>
                             </div>
                             <div class="col text-center ">
-                                <button class="btn btn-success w-75">Pagar</button>
+                                <a href="/Checkout/Checkout" class="btn btn-success">Pagar</a>
                             </div>
 
                         </div>
@@ -154,7 +154,6 @@
     <script src="~/Scripts/CookieHandler.js"></script>
     <script>
         let cookieHandler = new CookieHandler();
-
         async function showItemsOnCart() {
             let items = await getItemsOnCart();
             triggerModal(items);
@@ -162,7 +161,7 @@
         
         async function getItemsOnCart() {
             let items;
-            let itemsIds = cookieHandler.getCookieValue("cartItems");
+            let itemsIds = new CookieHandler().getCookieValue("cartItems");
             if (itemsIds != '') {
                 let url = "@cartFetchUrl" + "?itemsIds=" + itemsIds;
                 const response = await fetch(url);

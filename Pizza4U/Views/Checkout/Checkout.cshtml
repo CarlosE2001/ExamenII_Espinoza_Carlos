@@ -1,0 +1,207 @@
+﻿@{ 
+    string cartFetchUrl = Url.Content("~/Home/FetchDataToCart");
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="modal-body" id="calendarEventDescription">
+                <div id="itemPlaceholder" class="card bg-light">
+                    <div id="itemBody" class="card-body">
+                        <div class="row">
+                            <div id="ItemTitlePlaceholder" class="col">
+                                Titulo del Item
+                            </div>
+                            <div class="col text-end">
+                                <strong id="itemPricePlaceholder">C5000</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                Titulo del Item
+                            </div>
+                            <div class="col text-end">
+                                <strong>C5000</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="priceCard" class="card bg-primary text-white" style="margin: 15px 0 15px 0;">
+                    <div id="itemBody" class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                Precio Neto
+                            </div>
+                            <div class="col text-end">
+                                <strong id="netPricePlaceholder"></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                Iva
+                            </div>
+                            <div class="col text-end">
+                                <strong id="taxAmountPlaceholder">C5000</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                Precio final
+                            </div>
+                            <div class="col text-end">
+                                <strong id="finalPricePlaceholder">C5000</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card border-0">
+                    <div class="card-body">
+                        <label>Direccion de Entrega</label>
+                        <input type="text" name="name" value="" class="form-control" />
+                    </div>
+                </div>
+
+                <div id="buttonController" class="card border-0">
+                    <div class="row">
+                        <div class="col text-center ">
+                            <button class="btn btn-success w-75" onclick="clearCart()">Pagar</button>
+                        </div>
+                        <a href="/Home/Index" style="display:none;" id="finish">content</a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        
+
+    </div>
+</div>
+
+<script>
+
+
+        async function listItems() {
+                let items = await getItems();
+                loadItemsToView(items);
+        }
+
+        listItems();
+
+    function getValues(name) {
+        let result = document.cookie.match("(^|[^;]+)\\s*" + name + "\\s*=\\s*([^;]+)")
+        return result ? result.pop() : ""
+    }
+
+    function clearCart() {
+        document.cookie = "cartItems=;" ;
+        document.querySelector("#finish").click();
+    }
+
+        async function getItems() {
+            let items;
+            let itemsIds = getValues("cartItems");
+            if (itemsIds != '') {
+                let url = "@cartFetchUrl" + "?itemsIds=" + itemsIds;
+                const response = await fetch(url);
+                const data = await response.json();
+                items = data;
+            } else {
+                items = "";
+            }
+            return items;
+
+        }
+
+        function showItems(items) {
+            
+        }
+
+        function loadItemsToView(items) {
+            console.log(items);
+            let itemCardId = "#itemPlaceholder";
+            let netPriceId = "#netPricePlaceholder";
+            let taxAmountId = "#taxAmountPlaceholder";
+            let finalPriceId = "#finalPricePlaceholder";
+            let buttonControllerId = "#buttonController";
+            let priceCardId = "#priceCard";
+            let buttonId = "#modalToggle";
+            let bodyTemplateId = "#itemBody";
+
+            let itemPlaceholder = document.querySelector(itemCardId);
+            let priceCard = document.querySelector(priceCardId);
+            let netPriceContainer = document.querySelector(netPriceId);
+            let taxAmountContainer = document.querySelector(taxAmountId);
+            let finalPriceContainer = document.querySelector(finalPriceId);
+            let buttonController = document.querySelector(buttonControllerId);
+
+
+            let netPricePlaceholder = 0;
+            let tax = 0.13;
+            let taxAmountPlaceholder = 0;
+            let finalPricePlaceholder = 0;
+
+            //Hacer la copia de los bodys
+            let bodyTemplate = document.querySelector(bodyTemplateId);
+            itemPlaceholder.innerHTML = "";
+
+            if (items == '') {
+
+                priceCard.style.display = "none";
+                buttonController.style.display = "none";
+
+                let bodyTemplateClone = bodyTemplate.cloneNode(true);
+                bodyTemplateClone.childNodes[1].childNodes[1].innerHTML = "No hay productos";
+                bodyTemplateClone.childNodes[1].childNodes[3].innerHTML = "<strong>" + "₡0" + "</strong>";
+                itemPlaceholder.appendChild(bodyTemplateClone);
+
+
+            } else {
+                items.forEach(item => {
+                    let bodyTemplateClone = bodyTemplate.cloneNode(true);
+
+                    //Adding the Info
+                    bodyTemplateClone.childNodes[1].childNodes[1].innerHTML = item.Product;
+                    bodyTemplateClone.childNodes[1].childNodes[3].innerHTML = "<strong>" + "₡" + item.Price + "</strong>";
+
+                    console.log(bodyTemplateClone);
+                    //Adding Events
+                    bodyTemplateClone.addEventListener('click', (event) => {
+                        removeCartItem(item.Id);
+                        removeElement(bodyTemplateClone);
+                        let closeBtn = document.querySelector("#closeBtn");
+                        closeBtn.click();
+                    })
+
+                    itemPlaceholder.appendChild(bodyTemplateClone);
+                    netPricePlaceholder += parseInt(item.Price);
+                })
+
+                taxAmountPlaceholder = tax * netPricePlaceholder;
+                finalPricePlaceholder = netPricePlaceholder + taxAmountPlaceholder;
+
+                netPriceContainer.innerHTML = "₡" + netPricePlaceholder;
+                taxAmountContainer.innerHTML = "₡" + taxAmountPlaceholder;
+                finalPriceContainer.innerHTML = "₡" + finalPricePlaceholder;
+
+                priceCard.style.display = "block";
+                buttonController.style.display = "block";
+            }
+        }
+</script>
+
